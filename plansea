@@ -39,10 +39,6 @@ if not os.path.isdir(home + "/.plansea"):
     os.mkdir(home + "/.plansea")
     print("[+] created ~/.plansea")
 
-# check for ~/.plansea/init.py
-if not os.path.isfile(home + "/.plansea/__init__.py"):
-    open(home + "/.plansea/__init__.py", "x")
-
 # check for ~/.plansea/conf.py
 if not os.path.isfile(home + "/.plansea/conf.py"):
     f = open(home + "/.plansea/conf.py", "w")
