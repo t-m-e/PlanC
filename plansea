@@ -1,0 +1,124 @@
+#!/usr/bin/env python3
+
+# PlanSea is a C project initialization tool which uses a configuration file to 
+# create customizable project structures. There will be default initialization
+# variables and there will be customizable settings as well.
+
+# v1.0.0
+# project_name=STRING
+# init_git=BOOL
+# init_files=ARRAY
+# init_directories=ARRAY
+# init_commands=ARRAY
+
+# =============================================================================
+
+from importlib.machinery import SourceFileLoader
+import os
+import shutil
+import sys
+
+home = os.environ["HOME"]
+
+print(" ___ _           ___           ")
+print("| _ \ |__ _ _ _ / __| ___ __ _ ")
+print("|  _/ / _` | ' \\\\__ \/ -_) _` |")
+print("|_| |_\__,_|_||_|___/\___\__,_|")
+
+def help():
+    print("usage: plansea [-cdfhn] option")
+    print("\t-h\tdisplay this message")
+    print("\t-c\tadd command to custom commands")
+    print("\t-d\tadd directory to create")
+    print("\t-f\tadd file to create")
+    print("\t-n\tproject name")
+    exit(0)
+
+# check for ~/.plansea
+if not os.path.isdir(home + "/.plansea"):
+    os.mkdir(home + "/.plansea")
+    print("[+] created ~/.plansea")
+
+# check for ~/.plansea/init.py
+if not os.path.isfile(home + "/.plansea/__init__.py"):
+    open(home + "/.plansea/__init__.py", "x")
+
+# check for ~/.plansea/conf.py
+if not os.path.isfile(home + "/.plansea/conf.py"):
+    f = open(home + "/.plansea/conf.py", "w")
+    f.write("project_name = \"\"\n")
+    f.write("init_files = []\n")
+    f.write("init_directories = []\n")
+    f.write("init_git = False\n")
+    f.write("init_commands = []\n")
+    f.close()
+    print("[+] created ~/.plansea/conf.py")
+
+# check for ~/.plansea/bin
+if not os.path.isdir(home + "/.plansea/bin"):
+    os.mkdir(home + "/.plansea/bin")
+    print("[+] created ~/.plansea/bin")
+
+# check for ~/.plansea/bin/plansea
+if not os.path.isfile(home + "/.plansea/bin/plansea"):
+    shutil.copy(sys.argv[0], home + "/.plansea/bin/plansea")
+    print("[+] copied script to ~/.plansea/bin/plansea")
+
+# include config file
+_mod_path = home + "/.plansea/conf.py"
+with open(_mod_path, "r") as _f:
+    buf = _f.read()
+    for line in buf.split('\n')[:-1]:
+        exec(line)
+
+# parse arguments
+args = sys.argv[1:]
+argc = 0
+while argc < len(args):
+    match args[argc]:
+        case "-c":
+            init_commands.append(args[argc + 1])
+            argc = argc + 1
+        case "-d":
+            init_directories.append(args[argc + 1])
+            argc = argc + 1
+        case "-f":
+            init_files.append(args[argc + 1])
+            argc = argc + 1
+        case "-g":
+            init_git = args[argc + 1]
+            argc = argc + 1
+        case "-h":
+            help()
+        case "-n":
+            project_name = args[argc + 1]
+            argc = argc + 1
+        case _:
+            print("[-] failed: no arg flag '{}'".format(args[argc]))
+    argc = argc + 1
+
+# create project directory
+if os.path.isdir(project_name):
+    print("[-] failed: directory {} already exists".format(project_name))
+    exit(-1)
+os.mkdir(project_name)
+
+# use our config values
+if init_git == True:
+    print("[+] git init {}".format(project_name))
+    os.system("git init {}".format(project_name))
+
+for d in init_directories:
+    print("[+] mkdir {}/{}".format(project_name, d))
+    os.mkdir(project_name + "/" + d)
+
+for f in init_files:
+    print("[+] touch {}".format(project_name + '/' + f))
+    open(project_name + '/' + f, "x")
+
+for c in init_commands:
+    print("[+] {}".format(c))
+    os.system(c)
+
+
+
