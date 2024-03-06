@@ -15,6 +15,7 @@
 
 from importlib.machinery import SourceFileLoader
 import os
+import subprocess
 import shutil
 import sys
 
@@ -119,7 +120,10 @@ for f in init_files:
 
 for c in init_commands:
     print("[+] {}".format(c))
+    os.chdir(project_name)
     os.system(c)
+    os.chdir('../')
+    
 
 print("[+] project '{}' created!".format(project_name))
 
