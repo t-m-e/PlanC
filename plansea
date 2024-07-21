@@ -22,9 +22,9 @@ import sys
 home = os.environ["HOME"]
 
 print(" ___ _           ___           ")
-print("| _ \ |__ _ _ _ / __| ___ __ _ ")
-print("|  _/ / _` | ' \\\\__ \/ -_) _` |")
-print("|_| |_\__,_|_||_|___/\___\__,_|")
+print("| _ \\ |__ _ _ _ / __| ___ __ _ ")
+print("|  _/ / _` | ' \\\\__ \\/ -_) _` |")
+print("|_| |_\\__,_|_||_|___/\\___\\__,_|")
 
 def help():
     print("usage: plansea [-cdfhn] <option>")
